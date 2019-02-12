@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Aera calculating</title>
+  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri//themes/dark-blue/main.css"">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="https://js.arcgis.com/4.10/"></script>
+</head>
+<body>
+  <div id="viewDiv">
+    <div id="legend">
+    </div>
+    <div id="widget">
+        <button type="button" class="esri-widget--button butoN" onclick="chart()"><a href="#ct"><i class="far fa-chart-bar"></a></i></button>
+    </div>
+  </div>
+  <div class="reference-class"></div>
+  <div id="ct">
+  </div>
+    <div class="ct-chart ct-perfect-fourth animated fadeInUp">
+  </div>
+<script src="./dist/area_script.js"></script>
+</body>
+</html>
