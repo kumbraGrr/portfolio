@@ -2,16 +2,16 @@ let props = {
     featureLayers: [],
     legendProp: [],
     query: [],
-    year: [],
-    legend: 0
+    year: []
 };
 require([
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/FeatureLayer",
     "esri/widgets/Legend",
-    "esri/tasks/support/Query"
-], function (Map, MapView, FeatureLayer, Legend, Query) {
+    "esri/tasks/support/Query",
+    "esri/widgets/Expand"
+], function (Map, MapView, FeatureLayer, Legend, Query, Expand) {
     let map = new Map({
         basemap: "osm"
     });
@@ -26,7 +26,6 @@ require([
             url: url,
             outFields: ["AreaSqKm", "Year"]
         });
-        props.legendProp[i] = ({ layer: props.featureLayers[i] });
         //Query area
         var queryLoc = props.featureLayers[i].createQuery();
         queryLoc.where = "OBJECTID > '0'";
@@ -40,20 +39,29 @@ require([
 
         map.add(props.featureLayers[i]);
     }
-    
+    //Widget for a chart
     let widget = document.getElementById("widget");
     view.ui.add(widget, "top-right");
     
     props.featureLayers[8].when(() => {
         view.extent = props.featureLayers[8].fullExtent;
-        props.legend = new Legend({
+        })
+        .then(function () { 
+
+        //Responsive legend
+    var expandLegend = new Expand({
+        view: view,
+        content: new Legend({
             view: view,
-            layerInfos: props.legendProp,
-            container: "legend"
-        });
-    })
-        .then(function () { view.ui.add(props.legend, "bottom-right")});
+            container: document.createElement("div")
+        }),
+        mode: "drawer"
+    });
+    view.ui.add(expandLegend, "top-right");
+    });
 });
+
+//Chart
 let chartelony;
 
 let chartDom = document.getElementsByClassName("ct-chart");
@@ -69,7 +77,6 @@ function createChart(){
         height: '40em'
         };
 
-    console.log(data);
     chartelony = new Chartist.Line('.ct-chart', data, data2);
     chartDom[0].style.display = "none";
 }
