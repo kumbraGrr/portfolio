@@ -32,8 +32,8 @@ require([
         queryLoc.outFileds = ['area'];
 
         props.featureLayers[i].queryFeatures(queryLoc)
-            .then((response) => { props.query.push(response.features[0].attributes.AreaSqKm);
-                                  props.year.push(response.features[0].attributes.Year) 
+            .then((response) => { props.query[i] = (response.features[0].attributes.AreaSqKm);
+                                  props.year[i] = (response.features[0].attributes.Year); 
                                   })
             .then(() => props.year.length == 9? createChart(): "");
 
