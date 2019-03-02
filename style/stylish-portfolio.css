@@ -380,6 +380,3 @@ a:hover, a:focus, a:active {
 .text-secondary {
   color: #ecb807 !important;
 }
-.smaller {
-  max-height: 250px;
-}
