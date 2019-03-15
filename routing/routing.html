@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<head>
+<title>Routing</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+crossorigin=""/>
+<link rel="stylesheet" href="leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<link rel="stylesheet" href="leafletFullscreen/ControlFullScreen.css"/>
+<link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+crossorigin=""></script>
+<script src="leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="snake.js"></script>
+<script src="leafletFullscreen/ControlFullScreen.js"></script>
+<script src="https://unpkg.com/esri-leaflet"></script>
+<script src="https://unpkg.com/esri-leaflet-geocoder"></script>
+</head>
+<html>
+<body>
+    <div id="mymap">
+    </div>
+    <div id='calculations'>
+        <div class="question"><p>How much your car spend liters of fuel for 100 kilometers?</p>
+            <input id="fuel" type="number" name="fuel" value="6"></div>
+        <div id="calculate">
+        </div>
+    </div>
+    <canvas id="myChart"></canvas>
+</body>
+<script>
+    const mymap = L.map('mymap', {
+        fullscreenControl: true
+    }).setView([55.6569, 12.3638], 12);
+    let OpenStreetMap_Mapnik = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia3VtYnJhMTIzIiwiYSI6ImNqc2hvMWtibjBocTE0M2tna29naHNmNGcifQ.o-TNVWeWVNvMrKsHyawcbw', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1Ijoia3VtYnJhMTIzIiwiYSI6ImNqc2hvMWtibjBocTE0M2tna29naHNmNGcifQ.o-TNVWeWVNvMrKsHyawcbw'
+    }).addTo(mymap);
+    L.control.scale().addTo(mymap);
+    let layersCar = [];
+    let layersBike = [];
+
+    function createButton(label, container) {
+        var btn = L.DomUtil.create('button', '', container);
+        btn.setAttribute('type', 'button');
+        btn.innerHTML = label;
+        return btn;
+    }
+    
+    let car = L.Routing.control({
+            router: L.Routing.mapbox('pk.eyJ1Ijoia3VtYnJhMTIzIiwiYSI6ImNqc2hvMWtibjBocTE0M2tna29naHNmNGcifQ.o-TNVWeWVNvMrKsHyawcbw'),
+            lineOptions: {
+                styles: [{color: 'white', opacity: 0, weight: 5}]
+             },
+            show: false,
+            draggableWaypoints: false,
+            addWaypoints: false,
+            fitSelectedRoutes:true
+          }).addTo(mymap);
+    let bike = L.Routing.control({
+    router: L.Routing.mapbox('pk.eyJ1Ijoia3VtYnJhMTIzIiwiYSI6ImNqc2hvMWtibjBocTE0M2tna29naHNmNGcifQ.o-TNVWeWVNvMrKsHyawcbw', {profile:'mapbox/cycling'}),
+    lineOptions: {
+        styles: [{color: 'white', opacity: 0, weight: 5}]
+        },
+    show: false,
+    draggableWaypoints: false,
+    addWaypoints: false,
+    fitSelectedRoutes:true
+    }).addTo(mymap);
+
+    car.on('routesfound', function(e) {
+        let latlong = [];
+        for(let i = 0;i <e.routes[0].coordinates.length;i++){
+            let lat = e.routes[0].coordinates[i].lat;
+            let lng = e.routes[0].coordinates[i].lng;
+            latlong[i]=[lat,lng]
+        }
+        layersCar[0] = L.polyline(latlong, {
+            snakingSpeed: 200,    
+            weight: 9,
+            color: 'black',
+            opacity: 0.15});
+        layersCar[1] = L.polyline(latlong, {
+            snakingSpeed: 200,    
+            weight: 6,
+            color: 'white',
+            opacity: 0.8});
+        layersCar[2] = L.polyline(latlong, {
+            snakingSpeed: 200,    
+            weight: 2,
+            color: 'red',
+            opacity: 1});
+        for(let i =0; i<layersCar.length;i++){
+            layersCar[i].addTo(mymap).snakeIn();
+        }
+        let div = document.getElementById('calculate');
+        div.setAttribute("class", "question");
+        let fuel = document.getElementById('fuel');
+        addText(div, e);  
+    });
+    bike.on('routesfound', function(e) {
+                let latlong = [];
+                let lngOfLn = 1000;
+            if(e.routes[0].summary.totalDistance/1000 > 100){
+                lngOfLn = 10000;
+            }else if(e.routes[0].summary.totalDistance/1000 > 500){
+                alert("Routes are not found for more than 500 kilometers");
+                return;
+            }
+            for(let i = 0;i < e.routes[0].coordinates.length;i++){
+                let lat = e.routes[0].coordinates[i].lat;
+                let lng = e.routes[0].coordinates[i].lng;
+                latlong[i]=L.latLng(lat,lng);
+                i === e.routes[0].coordinates.length-1? breakeLine(latlong, lngOfLn):"";
+            }
+            layersBike[0] = L.polyline(latlong, {
+                snakingSpeed: 200,    
+                weight: 9,
+                color: 'black',
+                opacity: 0.15});
+            layersBike[1] = L.polyline(latlong, {
+                snakingSpeed: 200,    
+                weight: 6,
+                color: 'white',
+                opacity: 0.8});
+            layersBike[2] = L.polyline(latlong, {
+                snakingSpeed: 200,    
+                weight: 2,
+                color: 'blue',
+                opacity: 1});
+            for(let i = 0; i <layersBike.length;i++){
+                layersBike[i].addTo(mymap).snakeIn();
+            }
+        });
+    
+
+        mymap.on('click', function(e) {
+            var container = L.DomUtil.create('div'),
+                startBtn = createButton('Start from this location', container),
+                destBtn = createButton('Go to this location', container);
+        
+            L.popup()
+                .setContent(container)
+                .setLatLng(e.latlng)
+                .openOn(mymap);
+            
+
+            //Sad napraviti restart button i ovo za preko petsto kilometara restartovati apikaciju
+            L.DomEvent.on(startBtn, 'click', function() {
+                car.spliceWaypoints(0, 1, e.latlng);
+                bike.spliceWaypoints(0, 1, e.latlng);
+                if(layersBike.length > 2 || layersCar > 2){
+                    for(let i =0; i<layersCar.length;i++){
+                        mymap.removeLayer(layersCar[i]);
+                    }
+                    for(let i = 0; i <layersBike.length;i++){
+                        mymap.removeLayer(layersBike[i]);
+                    }
+                }
+                mymap.closePopup();
+            });
+        
+            L.DomEvent.on(destBtn, 'click', function() {
+                car.spliceWaypoints(car.getWaypoints().length - 1, 1, e.latlng);
+                bike.spliceWaypoints(bike.getWaypoints().length - 1, 1, e.latlng);
+                if(layersBike.length > 2 || layersCar > 2){
+                    for(let i =0; i<layersCar.length;i++){
+                        mymap.removeLayer(layersCar[i]);
+                    }
+                    for(let i = 0; i <layersBike.length;i++){
+                        mymap.removeLayer(layersBike[i]);
+                    }
+                }
+                mymap.closePopup();
+            });
+        });
+
+        let searchControl = L.esri.Geocoding.geosearch({
+            placeholder: "Enter start point",
+            zoomToResult: false,
+            useMapBounds: false
+        }).addTo(mymap);
+
+        searchControl.on("results", function(data) {
+            if(searchControl.options.placeholder === "Enter start point" && data.latlng){
+                car.spliceWaypoints(0, 1, data.latlng);
+                bike.spliceWaypoints(0, 1, data.latlng);
+                if(layersBike.length > 2 || layersCar > 2){
+                    for(let i =0; i<layersCar.length;i++){
+                        mymap.removeLayer(layersCar[i]);
+                    }
+                    for(let i = 0; i <layersBike.length;i++){
+                        mymap.removeLayer(layersBike[i]);
+                    }
+                }
+                searchControl.options.placeholder = "Enter destination point";
+            }else if(searchControl.options.placeholder === "Enter destination point" && data.latlng){
+                car.spliceWaypoints(car.getWaypoints().length - 1, 1, data.latlng);
+                bike.spliceWaypoints(bike.getWaypoints().length - 1, 1, data.latlng);
+                if(layersBike.length > 2 || layersCar > 2){
+                    for(let i =0; i<layersCar.length;i++){
+                        mymap.removeLayer(layersCar[i]);
+                    }
+                    for(let i = 0; i <layersBike.length;i++){
+                        mymap.removeLayer(layersBike[i]);
+                    }
+                }
+                searchControl.options.placeholder = "Enter start point";
+            }
+        });
+          function addText(div, e){
+            div.innerHTML = "";
+            div.innerHTML +="<p>Covered kilometers per year: " + (e.routes[0].summary.totalDistance*252*2/1000).toFixed(2) + " km (Go and back)</p>"; 
+            div.innerHTML +="<p>Route length: " + (e.routes[0].summary.totalDistance/1000).toFixed(2) + " km</p>"; 
+            div.innerHTML +="<p>Liters of fuel per year: " + (e.routes[0].summary.totalDistance*252*2/100000*fuel.value).toFixed(2) +" l</p>";
+            div.innerHTML +="<p>Dkk spent on fuel yearly: " + (e.routes[0].summary.totalDistance*252*2/100000*fuel.value*11.07).toFixed(2) +" dkk</p>";
+            div.innerHTML +="<p>Kilos of CO2 produced per year: " + (e.routes[0].summary.totalDistance*252*2/1000*130/1000).toFixed(2) + " kg</p>" ;
+          }  
+
+          function breakeLine(latlong, lngLine){
+              let coords = [];
+              let acc = 0;
+              for(let i = 0; i <latlong.length;i++){
+                  if(latlong.length - 1 === i){
+                    coords.push([latlong[latlong.length - 1].lat,latlong[latlong.length - 1].lng]);
+                    elevation(coords);
+                 }else {
+                    i===0?coords.push([latlong[i].lat,latlong[i].lng]):"";
+                    let dist = latlong[i].distanceTo(latlong[i+1]);
+                    acc += dist;
+                    if(acc > lngLine){
+                        coords.push([latlong[i+1].lat,latlong[i+1].lng]);
+                        acc-=lngLine;
+                    }
+                 }
+              }
+          }
+          function elevation(points){ 
+            let elevations = [];
+            let count = [];
+            for(let i = 0;i < points.length;i++){
+                let http = new XMLHttpRequest();
+                let url = `https://elevation-api.io/api/elevation?points=${points[i]}`;
+                http.open("GET", url);
+                http.responseType = "json";
+                http.send();
+                http.onreadystatechange=(e)=>{
+                    if(http.readyState===4 && http.status===200){
+                        elevations[i] = http.response.elevations[0].elevation;
+                        count.push('true');
+                        if(count.length === points.length){
+                            createChart(elevations);
+                            count = [];
+                        }
+                    }
+                }  
+            }
+          }  
+
+          function createChart(elevationss){
+            let myChart;
+            let labelsKm = [];
+          for(let i = 1;i < elevationss.length; i++){
+             labelsKm[0] = "Start";
+             if(i===elevationss.length-1){
+                labelsKm[i] = "End of route";
+             }else{
+                labelsKm[i] = i.toString();
+             }
+          }
+
+          myChart? myChart.destroy() : "";
+          var ctx = document.getElementById("myChart").getContext('2d');
+          myChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: labelsKm,
+                  datasets: [{
+                      label: 'Elevation of a bike path',
+                      data: elevationss,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: "white",
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      pointHoverRadius: 5,
+                      borderWidth: 1,
+                      color: "white",
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true
+                          }
+                      }]
+                  }
+              }
+          });
+          }
+          
+</script>
+</html>

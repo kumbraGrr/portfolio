@@ -1,0 +1,31 @@
+body {
+    padding: 0;
+    margin: auto;
+    background: #343148;
+}
+p{
+    color: white;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#mymap{ 
+    height: 600px; 
+}
+.leaflet-control-container .leaflet-routing-container-hide{
+    display: none;
+}
+.question {
+    padding-left: 1em;
+}
+#fuel {
+    border-radius: 6px;
+    border: 0;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#myChart {
+    display: inline-block;
+    width:400px; 
+    height:50px;
+}
+#calculations {
+    display: inline-block;
+}
