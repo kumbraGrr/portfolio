@@ -7,7 +7,6 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
     integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
     crossorigin=""></script>
-    <script src="OSM-leaflet.js"></script>
     <link rel="stylesheet" href="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.css"/>
     <script src="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js"></script>
     <script
@@ -26,9 +25,7 @@
     subdomains: 'abcd',
     maxZoom: 19
   }).addTo(map);
-  //OSM Biuildings 2.5 D
-  let osm = new OSMBuildings(map).load();
-  osm.options.rotation = 5;
+
   //Data from Aarhus Municiplaity
   let urls = ['https://portal.opendata.dk/api/3/action/datastore_search?resource_id=c3097987-c394-4092-ad1d-ad86a81dbf37',
             'https://portal.opendata.dk/api/3/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d'];
