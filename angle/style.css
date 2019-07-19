@@ -1,0 +1,17 @@
+body {
+    margin: 0 auto;
+}
+
+#mapid {
+    height: 100vh; 
+}
+
+.popup {
+    position: absolute;
+    top: 650px;
+    right: 80px;
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    display: none;
+}
