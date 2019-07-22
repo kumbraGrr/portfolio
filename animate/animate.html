@@ -34,10 +34,13 @@
   let markerLayer;
   //Merging two tables and matching ID/s
   function refreshData(){
-    $.each(urls, function(i, u){ 
-      $.ajax({url: u}).done((result) => both[i] = result.result.records)
+    let count = 0;
+    $.each(urls, function(k, u){
+      $.ajax({url: u}).done((result) => both[k] = result.result.records)
       .then(()=>{
-        if(i === 1){
+        count += 1;
+        if(count === 2){
+          console.log(count);
           concate();
         }
       });
