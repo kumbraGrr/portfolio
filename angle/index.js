@@ -7,6 +7,7 @@ var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{
 let temLayer = L.layerGroup().addTo(map);
 let rightClick = true;
 map.doubleClickZoom.disable();
+const divatore = document.getElementsByClassName('popup');
 let distance;
 
 //Disabling unnecessary widgets
@@ -63,7 +64,6 @@ function createPoly (p1, p2){
 map.on('pm:drawend', () => {
   temLayer.clearLayers();
   map.off('mousemove');
-  let divatore = document.getElementsByClassName('popup');
   divatore[0].style.display = 'none';
 });
 
@@ -114,7 +114,7 @@ function createCircle(p1, ang1, ang2){
 
 function angleDeg(ang1, ang2){
   let number = (ang1 - ang2).toFixed(4).toString();
-  let divatore = document.getElementsByClassName('popup');
   divatore[0].style.display = 'block';
+  divatore[0].style.top = window.innerHeight - 100 + 'px';
   divatore[0].innerHTML = number;
-}
+};
