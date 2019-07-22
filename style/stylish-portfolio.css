@@ -385,4 +385,8 @@ a:hover, a:focus, a:active {
   max-height: 300px;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
 
