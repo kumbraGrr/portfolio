@@ -37,7 +37,7 @@
     $.each(urls, function(i, u){ 
       $.ajax({url: u}).done((result) => both[i] = result.result.records)
       .then(()=>{
-        if(i === 0){
+        if(i === 1){
           concate();
         }
       });
