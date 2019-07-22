@@ -37,13 +37,13 @@
     $.each(urls, function(i, u){ 
       $.ajax({url: u}).done((result) => both[i] = result.result.records)
       .then(()=>{
-        if(i == 1){
+        if(i === 0){
           concate();
         }
       });
      });
     function concate(){
-      let randClass=0;
+      let randClass = 0;
       let markers = [];
       let teskaPrica = [];
       //Looping through both data to find matching ID/s
