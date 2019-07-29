@@ -4,6 +4,7 @@ var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+//Variables
 let temLayer = L.layerGroup().addTo(map);
 let rightClick = true;
 map.doubleClickZoom.disable();
@@ -118,3 +119,8 @@ function angleDeg(ang1, ang2){
   divatore[0].style.top = window.innerHeight - 100 + 'px';
   divatore[0].innerHTML = number;
 };
+
+function openInNewTab(url) {
+  var win = window.open(url, '_blank');
+  win.focus();
+}

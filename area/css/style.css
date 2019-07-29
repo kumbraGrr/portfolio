@@ -29,3 +29,25 @@ a:link, a:visited {
 ct-chart {
   overflow: scroll;
 }
+.btn-link {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid;
+  border-radius: 6px;     
+  color: black;      
+  padding: 10px 16px;      
+  text-align: center;      
+  display: inline-block;           
+  margin: 4px 2px;      
+  -webkit-transition-duration: 0.4s; /* Safari */      
+  transition-duration: 0.4s;     
+  cursor: pointer;     
+  text-decoration: none;
+  font-family: 'Times New Roman', Times, serif;    
+}
+
+.btn-link:hover {     
+   background: rgb(240, 240, 240);      
+}

@@ -14,11 +14,11 @@
 </head>
 <body>
 
-        <div id="mapid"></div>
+    <div id="mapid" style="z-index:1;"></div>
+    <div class="btn-link"  onclick="openInNewTab('https://github.com/kumbraGrr/My-personal-projects/tree/master/slider');" style="z-index:2;">Click to see code!</div>
     <div class="value">0</div>
     <input type="range" min="0" max="10" step="1" value="0">
    
-    
 <script>
     let togle;
     let markers = [];
@@ -81,6 +81,11 @@
          }, 1000);
     }
     auto();
+
+    function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+    }
 </script>
 </body>
 </html>

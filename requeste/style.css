@@ -1,26 +1,8 @@
-body {
-    margin: 0 auto;
-}
-
-#mapid {
-    height: 100vh; 
-}
-
-.popup {
-    position: absolute;
-    top: 650px;
-    right: 80px;
-    width: 100px;
-    height: 20px;
-    text-align: center;
-    display: none;
-}
-
 .btn-link {
     position: absolute;
     top: 30px;
     right: 50px;
-    background: rgba(47, 0, 255, 0.1);
+    background: rgba(255, 255, 255, 0.3);
     border: 2px solid;
     border-radius: 6px;     
     color: black;      
@@ -33,8 +15,8 @@ body {
     cursor: pointer;     
     text-decoration: none;
     font-family: 'Times New Roman', Times, serif;    
-}
-
-.btn-link:hover {     
-     background: #008CBA;      
-}
+  }
+  
+  .btn-link:hover {     
+     background: rgb(240, 240, 240);      
+  }

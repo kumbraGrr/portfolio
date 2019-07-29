@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="css/style.css"/>
   </head>
  <body>
-  <div id="map"></div>
+  <div id="map" style="z-index:1;"></div>
+  <div class="btn-link"  onclick="openInNewTab('https://github.com/kumbraGrr/My-personal-projects/tree/master/animate');" style="z-index:2;">Click to see code!</div>
   <script>
   //Leaflet basemap
   const map = new L.Map('map').setView([56.162739, 10.203211], 13);
@@ -40,7 +41,6 @@
       .then(()=>{
         count += 1;
         if(count === 2){
-          console.log(count);
           concate();
         }
       });
@@ -159,6 +159,10 @@
   //Refresh data every 35 seconds
   setInterval(refreshData, 35 * 1000);
   
+  function openInNewTab(url) {
+  var win = window.open(url, '_blank');
+  win.focus();
+}
   </script>
  </body>
 </html>
