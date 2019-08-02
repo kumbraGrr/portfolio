@@ -29,7 +29,7 @@ let r;
 let Request;
 let selectedService;
 const DEFAULT_BASEMAP = "streets"
-//second commit
+//Implement ESRI library
 require (["esri/Map",
 		 "esri/views/MapView",
 		 "esri/request",
@@ -43,7 +43,7 @@ require (["esri/Map",
 			Legend,
 			Search)
 		{	
-			 Request= esriRequest;
+			 Request = esriRequest;
 			 generateBasemaps();
 			 map = new Map({basemap:DEFAULT_BASEMAP})
 			 let viewoptions = {container: "mapview", map: map, 
@@ -74,6 +74,7 @@ require (["esri/Map",
 		     		//alert(result.services[i].name);
 		     	}
 		     }
+			 //Changing service map
 			function onChangeServiceMap()
 			{
 			    selectedService = lstservices.options[lstservices.selectedIndex].textContent;
@@ -85,7 +86,6 @@ require (["esri/Map",
 				layer.then
 					(() => 
 					{
-					
 					let toc = document.getElementById("toc");
 					toc.innerHTML = "";
 					let layerlist = document.createElement("ul");
@@ -96,10 +96,8 @@ require (["esri/Map",
 					}
 					)
 			}
-		}
-		);
-function getCount(layerid, el)
-{
+		});
+function getCount(layerid, el){
  	let queryurl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/" + selectedService + "/MapServer/" + layerid + "/query";
 	let queryOptions = {
      					responseType: "json",
@@ -127,6 +125,7 @@ function populateLayerRecursive(thislayer, layerlist)
 	let btn = document.createElement("button");
 	btn.textContent = "Count";
 	getCount(thislayer.id, btn);
+
 	//btn.addEventListener("click", e => getCount(thislayer.id, btn))
 	let layeritem = document.createElement("li");
 	layeritem.appendChild(chk);
@@ -135,13 +134,13 @@ function populateLayerRecursive(thislayer, layerlist)
 	layerlist.appendChild(layeritem);
 	if (thislayer.sublayers != null && thislayer.sublayers.items.length > 0)
 	{
-		 let newlist = document.createElement("ul");
-		 layerlist.appendChild(newlist);
-		 for (let i = 0; i < thislayer.sublayers.length; i++)
-	 	 {
-		 	 populateLayerRecursive(thislayer.sublayers.items[i],newlist);
- 
-	     }
+		let newlist = document.createElement("ul");
+		layerlist.appendChild(newlist);
+		for (let i = 0; i < thislayer.sublayers.length; i++)
+		{
+			populateLayerRecursive(thislayer.sublayers.items[i],newlist);
+
+		}
 	}
 	
 }
@@ -174,7 +173,6 @@ function generateBasemaps()
 		option.id = basemaps[i];
 		option.textContent = basemaps[i];
 		if (basemaps[i] == DEFAULT_BASEMAP) option.selected = true;
-		
 		cmbbasemaps.appendChild(option);
 	}
 }
@@ -184,6 +182,5 @@ function openInNewTab(url) {
   win.focus();
 }
 </script>
-
 </body>
 </html>
