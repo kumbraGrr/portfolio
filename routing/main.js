@@ -300,6 +300,7 @@ bike.on('routesfound', function(e) {
       });
 ;}
 
+//Update Calculations
 function updateCalc(){
     if(!fuelCalc.routeCalculated){
         return;
@@ -307,6 +308,7 @@ function updateCalc(){
     addText(fuelCalc.div, fuelCalc.e, fuelCalc.fuel );
 };
 
+//Get users location
 function getLocation() {    
     fetch('https://ipapi.co/json')
         .then(res => res.json())
