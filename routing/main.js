@@ -1,6 +1,6 @@
 const mymap = L.map('mymap', {
     fullscreenControl: true
-}).setView([55.6569, 12.3638], 12);
+}).setView([25,0], 3);
 let OpenStreetMap_Mapnik = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia3VtYnJhMTIzIiwiYSI6ImNqc2hvMWtibjBocTE0M2tna29naHNmNGcifQ.o-TNVWeWVNvMrKsHyawcbw', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
@@ -10,6 +10,13 @@ let OpenStreetMap_Mapnik = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}
 L.control.scale().addTo(mymap);
 let layersCar = [];
 let layersBike = [];
+let fuelCalc = {
+    routeCalculated: false,
+    div: '',
+    fuel: 0,
+    e: ''
+}
+getLocation();
 
 function createButton(label, container) {
     var btn = L.DomUtil.create('button', '', container);
@@ -43,8 +50,7 @@ fitSelectedRoutes:true
 car.on('routesfound', function(e) {
     let latlong = [];
     for(let i = 0;i <e.routes[0].coordinates.length;i++){
-        let lat = e.routes[0].coordinates[i].lat;
-        let lng = e.routes[0].coordinates[i].lng;
+        let {lat, lng} = e.routes[0].coordinates[i];
         latlong[i]=[lat,lng]
     }
     layersCar[0] = L.polyline(latlong, {
@@ -68,25 +74,31 @@ car.on('routesfound', function(e) {
     let div = document.getElementById('calculate');
     div.setAttribute("class", "question");
     let fuel = document.getElementById('fuel');
-    addText(div, e);  
+    fuelCalc.routeCalculated = true;
+    addText(div, e, fuel);  
 });
 
 //Getting route for a bicycle
 bike.on('routesfound', function(e) {
+        let route = e.routes[0];
+
             let latlong = [];
             let lngOfLn = 1000;
-        if(e.routes[0].summary.totalDistance/1000 > 100){
+
+        if(route.summary.totalDistance/1000 > 100){
             lngOfLn = 10000;
-        }else if(e.routes[0].summary.totalDistance/1000 > 500){
-            alert("Routes are not found for more than 500 kilometers");
+        }else if(route.summary.totalDistance/1000 > 500){
+            alert("Routes are not calulated for more than 500 kilometers");
             return;
         }
-        for(let i = 0;i < e.routes[0].coordinates.length;i++){
-            let lat = e.routes[0].coordinates[i].lat;
-            let lng = e.routes[0].coordinates[i].lng;
+
+        for(let i = 0;i < route.coordinates.length;i++){
+            let lat = route.coordinates[i].lat;
+            let lng = route.coordinates[i].lng;
             latlong[i]=L.latLng(lat,lng);
-            i === e.routes[0].coordinates.length-1? breakeLine(latlong, lngOfLn):"";
+            i === route.coordinates.length-1? breakeLine(latlong, lngOfLn):"";
         }
+
         layersBike[0] = L.polyline(latlong, {
             snakingSpeed: 200,    
             weight: 9,
@@ -146,6 +158,7 @@ bike.on('routesfound', function(e) {
             mymap.closePopup();
         });
     });
+
     //Adding option in geocoder to add option for starting and ending point
     let searchControl = L.esri.Geocoding.geosearch({
         placeholder: "Enter start point",
@@ -180,8 +193,15 @@ bike.on('routesfound', function(e) {
             searchControl.options.placeholder = "Enter start point";
         }
     });
+
     //Calculation
-      function addText(div, e){
+      function addText(div, e, fuel){
+        fuelCalc = {
+            ...fuelCalc,
+            div,
+            e,
+            fuel
+        }
         div.innerHTML = "";
         div.innerHTML +="<p>Covered kilometers per year: " + (e.routes[0].summary.totalDistance*252*2/1000).toFixed(2) + " km (Go and back)</p>"; 
         div.innerHTML +="<p>Route length: " + (e.routes[0].summary.totalDistance/1000).toFixed(2) + " km</p>"; 
@@ -278,9 +298,24 @@ bike.on('routesfound', function(e) {
               }
           }
       });
-      }
+;}
+
+function updateCalc(){
+    if(!fuelCalc.routeCalculated){
+        return;
+    }
+    addText(fuelCalc.div, fuelCalc.e, fuelCalc.fuel );
+};
+
+function getLocation() {    
+    fetch('https://ipapi.co/json')
+        .then(res => res.json())
+        .then(location => {
+        mymap.flyTo(new L.LatLng(location.latitude, location.longitude), 12);
+    });
+}
 
 function openInNewTab(url) {
 var win = window.open(url, '_blank');
 win.focus();
-}       
+};       
