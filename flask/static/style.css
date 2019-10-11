@@ -1,0 +1,12 @@
+.ct-series-a .ct-bar {
+  stroke: black;
+  stroke-width: 50px;
+  stroke-dasharray: none;
+}
+.ct-chart {
+	  stroke: red;
+	  stroke-width: 50px;
+}
+.ct-label {
+	color: white;
+}

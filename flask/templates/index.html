@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pharmacy GIS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://openlayers.org/en/v4.5.0/css/ol.css"
+      type="text/css"
+    />
+    <script
+      src="https://openlayers.org/en/v4.5.0/build/ol.js"
+      type="text/javascript"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+      integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+      integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <style>
+      html {
+        background-color: black;
+      }
+      .ct-series-a .ct-bar {
+        stroke: black;
+        stroke-width: 38px;
+        stroke-dasharray: none;
+      }
+      .ct-chart {
+        stroke: red;
+        stroke-width: 50px;
+      }
+      .ol-zoom .ol-zoom-out {
+        margin-top: 204px;
+      }
+      .ol-zoomslider {
+        background-color: wtransparent;
+        top: 2.3em;
+      }
+      .ol-zoom-extent {
+        top: 17em;
+        left: 0.5em;
+      }
+      .ol-mouse-position {
+        top: auto;
+        bottom: 2.5em;
+        left: 1em;
+        color: purple;
+      }
+      .ct-chart-pie .ct-label {
+        color: white;
+        fill: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="container-fluid"
+      style="background: black;box-shadow: inset 0 0 1rem rgba(0,0,0,.5);color: #ffffff"
+    >
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12">
+          <h2 style="text-align: center;margin-top: 0.5em;">
+            WebGIS Solution for Locating the Optimal Place for Pharmacies
+          </h2>
+        </div>
+      </div>
+      <div class="row " style="margin-right:0.3em;">
+        <div
+          class="col-xs-12 col-sm-12 col-md-12 col-xl-9"
+          style="width: 100%; height: 32em; margin-top: 1.5em;"
+        >
+          <div
+            id="map"
+            class="map"
+            style="box-shadow: 0 0em 0.5em 0.1em #FFFFFF;height: 32em;"
+          ></div>
+        </div>
+        <div
+          class="col-xs-12 col-sm-12 col-md-12 col-xl-3"
+          style="background: #cacaca; margin-top: 1.5em;box-shadow: 0 0em 0.5em 0.1em #FFFFFF;"
+        >
+          <p style="text-align: justify;">
+            <b
+              >Welcome to WebGIS solution for optimal location for
+              pharmacies.</b
+            >
+            After click inside of Norrebro border user will get final result in
+            chart solution with all variables and as graphic represantation of
+            pill. Pills goes (from worst to best) as red, orange, yellow and
+            green pill.
+          </p>
+          <p id="text1" style="text-align: justify;"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div
+          class="col-xs-12 col-sm-12 col-md-6 col-xl-6"
+          style="height: 22em;"
+        >
+          <div
+            class="ct-chart ct-perfect-fourth"
+            style="background: white; height: 22em;margin-top: 1.5em;box-shadow: 0 0em 0.5em 0.1em #FFFFFF;"
+          ></div>
+        </div>
+        <div
+          class="col-xs-12 col-sm-12 col-md-3 col-xl-3"
+          style="height: 22em;"
+        >
+          <div
+            class="ct-chart2 ct-perfect-fourth tex"
+            style="height: 22em;margin-top: 1.5em;"
+          ></div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-1 col-xl-1">
+          <div id="pill" style="height: 160px; width: 80px;"></div>
+        </div>
+      </div>
+      <div class="row" style="height: 20em;margin-top: 4em;">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-xl-6"">
+        <div id="doct"></div>
+        <div
+          class="col-xs-12 col-sm-12 col-md-2 col-xl-2"
+          style="margin-top: 1.5em;"
+        >
+          <img
+            style="box-shadow: 0 0em 0.5em 0.1em #FFFFFF;"
+            src="../static/legend.png"
+          />
+        </div>
+      </div>
+      <div
+        class="col-xs-12 col-sm-12 col-md-6 col-xl-6"
+        style="height: 10px;"
+      ></div>
+    </div>
+    <script type="text/javascript">
+      var scaleLineControl = new ol.control.ScaleLine();
+      var mousePositionControl = new ol.control.MousePosition({
+        coordinateFormat: ol.coordinate.createStringXY(1)
+      });
+      var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(
+          /** @type {olx.style.IconOptions} */ ({
+            opacity: 1,
+            scale: 0.06,
+            src: "../static/logo.png"
+          })
+        )
+      });
+      var style = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: "rgba(216,191,216, 0.25)"
+        }),
+        stroke: new ol.style.Stroke({
+          color: "#6b00b3",
+          width: 1.5
+        })
+      });
+      var map = new ol.Map({
+        controls: ol.control
+          .defaults()
+          .extend([scaleLineControl, mousePositionControl]),
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          new ol.layer.Group({
+            layers: [
+              new ol.layer.Vector({
+                style: style,
+                source: new ol.source.Vector({
+                  format: new ol.format.GeoJSON(),
+                  url: "http://127.0.0.1:5000/geojson"
+                })
+              }),
+              new ol.layer.Vector({
+                style: iconStyle,
+                source: new ol.source.Vector({
+                  format: new ol.format.GeoJSON(),
+                  url: "http://127.0.0.1:5000/pharm"
+                })
+              })
+            ]
+          })
+        ],
+        target: "map",
+        view: new ol.View({
+          center: ol.proj.fromLonLat([12.5425, 55.6925]),
+          zoom: 13.2
+        })
+      });
+
+      map.on("singleclick", function(evt) {
+        var coordinate = evt.coordinate;
+        var hdms = ol.proj.transform(coordinate, "EPSG:3857", "EPSG:4326");
+
+        var myChart;
+        var getData = $.get(
+          "http://127.0.0.1:5000/density?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var getData1 = $.get(
+          "http://127.0.0.1:5000/income?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var getData2 = $.get(
+          "http://127.0.0.1:5000/pharma?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var getData3 = $.get(
+          "http://127.0.0.1:5000/hos?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var getData4 = $.get(
+          "http://127.0.0.1:5000/nursing?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+
+        getData.done(function(results) {
+          console.log(results);
+          getData1.done(function(results1) {
+            getData2.done(function(results2) {
+              getData3.done(function(results3) {
+                getData4.done(function(results4) {
+                  var weight1 = 0.35;
+                  var weight2 = 0.267;
+                  var weight3 = 0.183;
+                  var weight4 = 0.117;
+                  var weight5 = 0.083;
+                  var weighted_average =
+                    results2 * weight1 +
+                    results * weight2 +
+                    results3 * weight3 +
+                    results1 * weight4 +
+                    results4 * weight5;
+
+                  if (weighted_average <= 25) {
+                    document.getElementById("pill").innerHTML =
+                      '<img style="height: 160px; width: 160px;" src="../static/red_pill.png">';
+                    document.getElementById("text1").innerHTML =
+                      "This place is not optimal for Pharmacy store";
+                  }
+                  if (weighted_average > 25 && weighted_average <= 50) {
+                    document.getElementById("pill").innerHTML =
+                      '<img style="height: 160px; width: 160px;margin-top: 1em;" src="../static/orange_pill.png">';
+                    document.getElementById("text1").innerHTML =
+                      "Maybe you should consider one more time:) ";
+                  }
+                  if (weighted_average > 50 && weighted_average <= 75) {
+                    document.getElementById("pill").innerHTML =
+                      '<img style="height: 160px; width: 160px;margin-top: 1em;" src="../static/yellow_pill.png">';
+                    document.getElementById("text1").innerHTML =
+                      "Good location for pharmacy. ";
+                  }
+                  if (weighted_average > 75 && weighted_average <= 100) {
+                    document.getElementById("pill").innerHTML =
+                      '<img style="height: 160px; width: 160px;margin-top: 1em;" src="../static/green_pill.png">';
+                    document.getElementById("text1").innerHTML =
+                      " Very good location for pharmacy. ";
+                  }
+                  var data = {
+                    labels: [
+                      "Density of addresses",
+                      "Percentage of high incomers",
+                      "Chances based on nearest pharmacy",
+                      "Hospitals",
+                      "Nursing homes",
+                      "Chances of success"
+                    ],
+                    series: [
+                      [
+                        results,
+                        results1,
+                        results2,
+                        results3,
+                        results4,
+                        weighted_average
+                      ]
+                    ]
+                  };
+
+                  new Chartist.Bar(".ct-chart", data, {
+                    seriesBarDistance: 12,
+                    low: 0,
+                    high: 100
+                  });
+                });
+              });
+            });
+          });
+        });
+        var elem = document.createElement("img");
+        elem.setAttribute("src", "../static/doctor.png");
+        elem.setAttribute("height", "160");
+        elem.setAttribute("width", "80");
+        elem.setAttribute("class", "doc");
+        var getData5 = $.get(
+          "http://127.0.0.1:5000/doctors?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        getData5.done(function(doc) {
+          $(".doc").remove();
+
+          if (doc == 0) {
+            $("#doct").append('<p class="doc">There are no doctors nerby</p>');
+          }
+
+          for (i = 0; i < doc; i++) {
+            $("#doct").append(
+              '<img src="../static/doctor.png" class="doc" height="140" widhth="70">'
+            );
+          }
+        });
+
+        var Pieget = $.get(
+          "http://127.0.0.1:5000/age5?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var Pieget1 = $.get(
+          "http://127.0.0.1:5000/age6?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        var Pieget2 = $.get(
+          "http://127.0.0.1:5000/age65?lat=" + hdms[1] + "&lon=" + hdms[0]
+        );
+        Pieget.done(function(res) {
+          Pieget1.done(function(res1) {
+            Pieget2.done(function(res2) {
+              var data = {
+                labels: [
+                  "Age under 5 yrs",
+                  "Age between 6 and 65 yrs",
+                  "Age over 65 yrs"
+                ],
+                series: [res, res1, res2]
+              };
+
+              var options = {
+                labelInterpolationFnc: function(value) {
+                  return value[0];
+                }
+              };
+              var responsiveOptions = [
+                [
+                  "screen and (min-width: 640px)",
+                  {
+                    chartPadding: 30,
+                    labelOffset: 100,
+                    labelDirection: "explode",
+                    labelInterpolationFnc: function(value) {
+                      return value;
+                    }
+                  }
+                ],
+                [
+                  "screen and (min-width: 1024px)",
+                  {
+                    labelOffset: 80,
+                    chartPadding: 20
+                  }
+                ]
+              ];
+
+              new Chartist.Pie(".ct-chart2", data, options, responsiveOptions);
+            });
+          });
+        });
+      });
+      zoomslider = new ol.control.ZoomSlider();
+      map.addControl(zoomslider);
+
+      var myExtentButton = new ol.control.ZoomToExtent({
+        extent: [1388204, 7493251, 1404170, 7501602]
+      });
+      map.addControl(myExtentButton);
+    </script>
+  </body>
+</html>
