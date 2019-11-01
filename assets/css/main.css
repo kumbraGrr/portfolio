@@ -1281,7 +1281,7 @@ input, select, textarea {
 				.box.style2 .inner .image {
 					width: 100%;
 					height: auto;
-					max-width: 250px;
+					max-width: 400px;
 					padding: 0;
 					margin: 0 auto 20px auto;
 				}
