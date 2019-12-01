@@ -13,6 +13,7 @@
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="icon" href="data:;base64,=">
     <noscript><link rel="stylesheet" href="assets/css/noscript.css"/></noscript>
   </head>
   <body class="is-preload">
@@ -52,7 +53,7 @@
       data-aos-duration="1000"
       data-aos-once="true"
     >
-      <div class="image fit"><img data-lazy="images/pic01.jpg" alt=""></div>
+      <div class="image fit"><img data-lazy="./images/pic01.jpg" alt="" /></div>
       <div class="inner">
         <header>
           <h2>GIS development<br /></h2>
@@ -71,7 +72,7 @@
       data-aos-duration="1000"
       data-aos-once="true"
     >
-      <div class="image fit"><img data-lazy="images/pic02.jpg" alt=""></div>
+      <div class="image fit"><img data-lazy='./images/pic02.jpg' alt="" /></div>
       <div class="inner">
         <header>
           <h2>
@@ -135,7 +136,7 @@
             onclick="triggerDesc(1)"
           >
             <img
-            data-lazy="images/angle-min.png"
+              data-lazy="images/angle-min.png"
               alt="Measure angle on a Web map"
               title="Measure angle on a Web map"
             />
@@ -170,7 +171,7 @@
             onclick="triggerDesc(2)"
           >
             <img
-            data-lazy="images/animate.png"
+              data-lazy="images/animate.png"
               alt="Vehicle counter"
               title="Vehicle counter"
             />
@@ -206,7 +207,7 @@
             onclick="triggerDesc(3)"
           >
             <img
-            data-lazy="images/slider.png"
+              data-lazy="images/slider.png"
               alt="Slider with randomly generated points"
               title="Slider with randomly generated points"
             />
@@ -241,7 +242,7 @@
             onclick="triggerDesc(4)"
           >
             <img
-            data-lazy="images/london.png"
+              data-lazy="images/london.png"
               alt="London area through the years"
               title="London area through the years"
             />
@@ -274,7 +275,7 @@
             onclick="triggerDesc(5)"
           >
             <img
-            data-lazy="images/Untitled-min.png"
+              data-lazy="images/Untitled-min.png"
               alt="Weather app"
               title="Weather app"
             />
@@ -300,7 +301,7 @@
             onclick="triggerDesc(10)"
           >
             <img
-            data-lazy="images/reactLeaflet.png"
+              data-lazy="images/reactLeaflet.png"
               alt="React Leaflet Map"
               title="React Leaflet Map"
             />
@@ -330,7 +331,11 @@
             class="image fit img-shadow description"
             onclick="triggerDesc(6)"
           >
-            <img data-lazy="images/toDoApp.png" alt="ToDo app" title="ToDo app" />
+            <img
+              data-lazy="images/toDoApp.png"
+              alt="ToDo app"
+              title="ToDo app"
+            />
           </div>
           <div class="desc container box style3" id="6">
             <h2>ToDo app</h2>
@@ -352,7 +357,7 @@
             onclick="triggerDesc(7)"
           >
             <img
-            data-lazy="images/sket3.jpg"
+              data-lazy="images/sket3.jpg"
               alt="Snap to the line"
               title="Snap to the line"
             />
@@ -382,7 +387,7 @@
             onclick="triggerDesc(8)"
           >
             <img
-            data-lazy="images/pharma.jpg"
+              data-lazy="images/pharma.jpg"
               alt="GIS Solution - Locating the Optimal Place for Pharmacies"
               title="GIS Solution - Locating the Optimal Place for Pharmacies"
             />
@@ -397,9 +402,12 @@
               representation of results. We used SQL and PostGIS, Python and
               JavaScript in order to achieve results.
             </p>
-            <button class="style3 hvr-radial-out btn"
-            onclick="window.open('https://github.com/kumbraGrr/portfolio/tree/master/flask')"
-            >View the Code</button>
+            <button
+              class="style3 hvr-radial-out btn"
+              onclick="window.open('https://github.com/kumbraGrr/portfolio/tree/master/flask')"
+            >
+              View the Code
+            </button>
           </div>
         </div>
         <div class="row">
@@ -408,7 +416,7 @@
             onclick="triggerDesc(9)"
           >
             <img
-            data-lazy="images/build.jpg"
+              data-lazy="images/build.jpg"
               alt="Company website"
               title="Company website"
             />
@@ -445,7 +453,8 @@
           Copenhagen, Denmark. I moved in CPH for studies and stayed because of
           amazing people and city. Born and raised in a small city of Prijedor
           in Bosnia and Herzegovina.
-          <br /><br /> Feel free to contact me on
+          <br /><br />
+          Feel free to contact me on
           <a href="https://www.linkedin.com/in/branko-kuridza/">Linkedin</a> or
           <a href="https://www.facebook.com/profile.php?id=100008433064436"
             >Facebook</a
@@ -496,11 +505,12 @@
     <!-- Animation JS -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-      AOS.init({disable: function() {
-    var maxWidth = 800;
-    return window.innerWidth < maxWidth;
-  }
-  });
+      AOS.init({
+        disable: function() {
+          var maxWidth = 800;
+          return window.innerWidth < maxWidth;
+        }
+      });
     </script>
   </body>
 </html>

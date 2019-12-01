@@ -537,6 +537,7 @@ input, select, textarea {
 		.box.style1 {
 			background: #fff;
 			padding: 3em;
+			overflow: hidden;
 		}
 
 			.box.style1 .image {
@@ -546,7 +547,6 @@ input, select, textarea {
 				width: 50%;
 				height: 100%;
 				background: #152E33;
-				overflow: hidden;
 			}
 
 				.box.style1 .image img {
