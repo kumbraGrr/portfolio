@@ -92,6 +92,12 @@ function triggerDesc(el) {
 const targets = document.querySelectorAll("img");
 
 const lazyLoad = target => {
+
+	imgOptions = {
+	  threshold: 0,
+	  rootMargin: '0px 0px 200px 0px'
+  }
+
   const io = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
 
@@ -104,7 +110,7 @@ const lazyLoad = target => {
 		observer.disconnect();
       }
     });
-  });
+  }, imgOptions);
 
   io.observe(target);
 };
